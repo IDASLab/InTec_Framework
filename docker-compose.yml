@@ -1,0 +1,85 @@
+version: "3.8"
+
+services:
+  intec-edge-service:
+    build: ./edge/service_core  # Edge Service
+    container_name: intec-edge-service
+    restart: always
+    env_file:
+      - ./edge/service_core/.env  # Loads environment variables
+    depends_on:
+      - intec-mongodb
+    ports:
+      - "${HTTP_PORT:-1010}:1010"  # Expose Edge Service Port
+    networks:
+      - intec_network
+
+  intec-edge-analysis:
+    build: ./edge/analysis_core  # Edge Analysis
+    container_name: intec-edge-analysis
+    restart: always
+    env_file:
+      - ./edge/analysis_core/.env  # Loads environment variables
+    depends_on:
+      - intec-edge-service
+      - intec-mongodb
+      - intec-emqx
+    networks:
+      - intec_network
+
+  intec-mongodb:
+    image: mongo:latest
+    container_name: intec-mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - intec_network
+
+  intec-emqx:
+    image: emqx/emqx:latest
+    container_name: intec-emqx-broker
+    restart: always
+    ports:
+      - "1883:1883"   # MQTT Port
+      - "8083:8083"   # WebSocket Port (optional)
+      - "8084:8084"   # Secure WebSocket Port (optional)
+      - "8883:8883"   # Secure MQTT (TLS/SSL)
+      - "18083:18083" # EMQX Dashboard (UI)
+    environment:
+      EMQX_NAME: emqx
+      EMQX_HOST: 0.0.0.0
+      EMQX_DASHBOARD__DEFAULT_USERNAME: admin  # Custom dashboard username
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: admin  # Custom dashboard password
+    networks:
+      - intec_network
+
+  intec-sensor:
+    build: ./sensor  # Sensor Node
+    container_name: intec-sensor-node
+    restart: always
+    environment:
+      Name: "sensor01"
+      Subject: "subject1"
+      Broker: "intec-emqx-broker"  # Ensure sensor connects to the internal EMQX broker
+      Topic: "sensor/data"
+      WindowSize: "25"
+      Rate: "50"
+      Time: "60"
+    depends_on:
+      - intec-emqx
+    networks:
+      - intec_network
+
+networks:
+  intec_network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+

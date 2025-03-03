@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  sensor:
+    image: intec-sensor
+    build:
+      context: .
+    container_name: intec-sensor-01
+    environment:
+      - Name=sensor01
+      - Subject=subject1
+      - Broker=192.168.1.20
+      - Topic=sensor/data
+      - WindowSize=25
+      - Rate=50
+      - Time=60
+    volumes:
+      - ./model:/app/model
+    restart: always
+    tty: true
+

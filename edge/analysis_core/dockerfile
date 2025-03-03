@@ -1,0 +1,30 @@
+# Use an official Python runtime as the base image
+FROM python:3.9-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the project files into the container
+COPY . /app
+
+# Install system dependencies (for TensorFlow, Sklearn, etc.)
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Expose MQTT port (1883) and MongoDB port (27017) if needed
+EXPOSE 1883 27017
+
+# Copy the environment file
+COPY .env /app/.env
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Run the main application
+CMD ["python", "main.py"]
