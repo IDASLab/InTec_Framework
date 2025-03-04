@@ -59,9 +59,14 @@ class Database:
 
     def insert(self, data):
         """Insert data into the main collection."""
+        
         if self.collection is None:
             logging.error("❌ Database not connected. Cannot insert data.")
             return
+            
+        if data.get("id") is None:  # Check if id is null
+            data.pop("id", None)  # Remove id field before inserting 
+            
         try:
             self.collection.insert_one(data)
             #logging.info("✅ Data inserted successfully.")
