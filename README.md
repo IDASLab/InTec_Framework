@@ -111,7 +111,7 @@ This extracts sensor data into the ```sensor/data/``` directory.
 docker-compose up -d --build
 ```
 This launches: 
-✅ Edge Service (intec-edge-service)
+- ✅ Edge Service (intec-edge-service)
 - ✅ Edge Analysis (intec-edge-analysis)
 - ✅ Sensor Node (intec-sensor)
 - ✅ EMQX Broker (intec-emqx-broker)
