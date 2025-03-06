@@ -5,7 +5,7 @@ The **InTeC Framework** is a powerful Edge-AI framework designed to **optimize m
 - **Model Training & Analysis**
 - **Thing-based AI Model Deployment for Faster Responses**
 
-📄 **Published Paper:** [Springer Journal of Supercomputing](https://doi.org/10.1007/s00607-024-01388-6)  
+📄 **Published Paper:** [Springer Journal of Computing](https://doi.org/10.1007/s00607-024-01388-6)  
 📑 **Preprint Available:** [arXiv Preprint](https://arxiv.org/abs/2502.11644)  
 
 ---
